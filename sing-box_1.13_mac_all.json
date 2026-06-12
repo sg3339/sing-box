@@ -7,9 +7,9 @@
   "dns": {
     "servers": [
       {
-        "tag": "comss",
+        "tag": "cloudflare",
         "type": "https",
-        "server": "dns.comss.one",
+        "server": "cloudflare-dns.com",
         "server_port": 443,
         "path": "/dns-query",
         "domain_resolver": "bootstrap"
@@ -17,7 +17,7 @@
       {
         "tag": "bootstrap",
         "type": "udp",
-        "server": "83.220.169.155"
+        "server": "1.1.1.1"
       }
     ],
     "rules": [
@@ -30,7 +30,7 @@
     "independent_cache": true,
     "disable_cache": false,
     "strategy": "prefer_ipv4",
-    "final": "comss"
+    "final": "cloudflare"
   },
   "inbounds": [
     {
@@ -39,7 +39,7 @@
       "address": "172.19.0.1/30",
       "mtu": 1500,
       "auto_route": true,
-      "strict_route": false,
+      "strict_route": true,
       "stack": "system"
     }
   ],
@@ -49,7 +49,7 @@
       "tag": "direct"
     },
     {
-      "type": "http",
+      "type": "socks",
       "tag": "opera-proxy",
       "server": "192.168.0.30",
       "server_port": 18080
@@ -68,6 +68,22 @@
               "apple.com", "apple-dns.net", "apple-cloudkit.com", "apple-mapkit.com", "apple.news",
               "aaplimg.com", "cdn-apple.com", "icloud.com", "icloud-content.com", "mzstatic.com",
               "itunes.com", "me.com", "mac.com", "shazam.com", "darksky.net"
+            ]
+          }
+        ]
+      },
+      {
+        "tag": "heavy-direct",
+        "type": "inline",
+        "rules": [
+          {
+            "domain_suffix": [
+              "youtube.com", "youtu.be", "ytimg.com",
+              "wide-youtube.l.google.com", "youtube-nocookie.com", "youtube-ui.l.google.com",
+              "youtube.googleapis.com", "youtubeembeddedplayer.googleapis.com", "youtubei.googleapis.com",
+              "youtubekids.com", "yt.be", "withyoutube.com", "youtubeeducation.com",
+              "youtubefanfest.com", "youtubegaming.com", "youtubego.com", "youtubemobilesupport.com",
+              "googlevideo.com", "ggpht.com"
             ]
           }
         ]
@@ -95,6 +111,10 @@
         "outbound": "direct"
       },
       {
+        "rule_set": "heavy-direct",
+        "outbound": "direct"
+      },
+      {
         "rule_set": "apple-services",
         "outbound": "direct"
       },
@@ -114,3 +134,4 @@
     }
   }
 }
+
