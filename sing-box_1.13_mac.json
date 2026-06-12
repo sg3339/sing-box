@@ -7,9 +7,9 @@
   "dns": {
     "servers": [
       {
-        "tag": "comss",
+       "tag": "cloudflare",
         "type": "https",
-        "server": "dns.comss.one",
+        "server": "cloudflare-dns.com",
         "server_port": 443,
         "path": "/dns-query",
         "domain_resolver": "bootstrap"
@@ -17,7 +17,7 @@
       {
         "tag": "bootstrap",
         "type": "udp",
-        "server": "83.220.169.155"
+        "server": "1.1.1.1"
       }
     ],
     "rules": [
@@ -30,7 +30,7 @@
     "independent_cache": true,
     "disable_cache": false,
     "strategy": "prefer_ipv4",
-    "final": "comss"
+    "final": "cloudflare"
   },
   "inbounds": [
     {
@@ -39,7 +39,7 @@
       "address": "172.19.0.1/30",
       "mtu": 1500,
       "auto_route": true,
-      "strict_route": false,
+      "strict_route": true,
       "stack": "system"
     }
   ],
@@ -49,7 +49,7 @@
       "tag": "direct"
     },
     {
-      "type": "http",
+      "type": "socks",
       "tag": "opera-proxy",
       "server": "192.168.0.30",
       "server_port": 18080
@@ -65,11 +65,17 @@
         "rules": [
           {
             "domain_suffix": [
-              "gemini.google.com", "bard.google.com", "deepmind.com", "deepmind.google",
-              "aistudio.google.com", "notebooklm.google.com", "generativelanguage.googleapis.com",
-              "alkalimakersuite-pa.clients6.google.com", "proactivebackend-pa.googleapis.com",
-              "gemini.googleusercontent.com", "deepmindresearch.appspot.com",
-              "accounts.google.com", "apis.google.com", "clients6.google.com", "lh3.googleusercontent.com", "ssl.gstatic.com",
+               "google.com", "googleusercontent.com", "gstatic.com", "googleapis.com",
+               "gvt1.com", "gvt2.com",
+               "googlesyndication.com", "googlezip.net", "googledomains.com", "goog.",
+               "appspot.com", "firebaseapp.com", "firebasestorage.app",
+               "gemini.google.com", "bard.google.com", "deepmind.com", "deepmind.google",
+               "aistudio.google.com", "notebooklm.google.com", "generativelanguage.googleapis.com",
+               "alkalimakersuite-pa.clients6.google.com", "proactivebackend-pa.googleapis.com",
+               "accounts.google.com", "apis.google.com", "clients6.google.com",
+               "oauth2.googleapis.com", "quic.google.com",
+               "ai.google", "ai.google.dev", "makersuite.google.com",
+               "bard-frontend.firebaseapp.com", "bard-frontend.firebasestorage.app",
               "t.me", "tx.me", "telegram.dog", "telegram.org",
               "openai.com", "chatgpt.com", "chat.openai.com", "oaistatic.com", "oaiusercontent.com", "openaiapi-site.azureedge.net", "platform.openai.com", "openai.freshdesk.com", "openai.org", "openai.net",
               "anthropic.com", "claude.ai", "anthropic-api.com", "anthropic.org", "anthropic.io",
@@ -123,6 +129,23 @@
             ]
           }
         ]
+     },
+      {
+        "tag": "heavy-direct",
+        "type": "inline",
+        "rules": [
+          {
+            "domain_suffix": [
+              "youtube.com", "youtu.be", "ytimg.com",
+              "wide-youtube.l.google.com", "youtube-nocookie.com", "youtube-ui.l.google.com",
+              "youtube.googleapis.com", "youtubeembeddedplayer.googleapis.com", "youtubei.googleapis.com",
+              "youtubekids.com", "yt.be", "withyoutube.com", "youtubeeducation.com",
+              "youtubefanfest.com", "youtubegaming.com", "youtubego.com", "youtubemobilesupport.com",
+              "telegra.ph", "tdesktop.com", "telesco.pe", "telegram.space", "telegram.download", "tg.dev",
+              "avito.ru", "avito.st", "avito.com", "avito.tech", "avito.am", "avito.ma", "avito.uz", "avito.global", "avito-careers.com", "avito-portal.com"
+            ]
+          }
+        ]
       }
     ],
     "rules": [
@@ -146,13 +169,12 @@
         "outbound": "direct"
       },
       {
-        "rule_set": "opera-list",
-        "outbound": "opera-proxy"
+        "rule_set": "heavy-direct",
+        "outbound": "direct"
       },
       {
         "rule_set": "opera-list",
-        "network": "udp",
-        "action": "reject"
+        "outbound": "opera-proxy"
       }
     ],
     "final": "direct"
